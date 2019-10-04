@@ -4,27 +4,55 @@ import Gamespace from "./Components/gameSpace";
 import Creatures from "./Creature.json";
 import Creat from "./Components/creat";
 import Scorecard from "./Components/scorecard";
+import { checkServerIdentity } from "tls";
 class App extends Component {
 
   state = {
     Creatures,
-    score: 0
+    score: 0,
+    Clicked: []
   };
 
   imageClick = event => {
-    console.log(event.target.id)
-   const Creature=shuffle(this.state.Creatures);
-   const score=this.state.score+1
-   console.log("done");
-   this.setState({
-     Creatures:Creature,
-     score:score
-   })
+    const id = (event.target.id)
+    const Creature = shuffle(this.state.Creatures);
+    console.log("done");
+    this.setState({
+      Creatures: Creature,
+    })
+    this.check(id)
+  }
+
+  check = id => {
+    var clickedArray = this.state.Clicked;
+    if (clickedArray.includes(id)) {
+      this.setState({
+        score: 0,
+        Clicked:[]
+      })
+    }
+    else {
+      clickedArray.push(id);
+      console.log(clickedArray);
+      this.setState({
+        Clicked: clickedArray,
+        score: this.state.score + 1
+      })
+      var totalscore=this.state.score
+      console.log("this is"+totalscore);
+      this.won(totalscore);
+    }
+  }
+  won= totalscore =>{
+    console.log("this is"+totalscore);
+    if ( totalscore === 14)
+    {alert("congratulations you won!")
+  this.setState({score:0})}
   }
   render() {
     return (
       <div>
-        <Title/>
+        <Title />
         <Gamespace>
           {this.state.Creatures.map(Creature => (
             <Creat
@@ -36,7 +64,7 @@ class App extends Component {
           ))}
         </Gamespace>
         <Scorecard
-        score={this.state.score}
+          score={this.state.score}
         />
       </div>
     );
@@ -53,4 +81,7 @@ function shuffle(array) {
   console.log("shuffle");
   return array;
 };
+
+
+
 export default App;
